@@ -1,0 +1,59 @@
+1、学习使用wine日志排查问题
+输出不同的日志信息
+WINEDEBUG=+loaddll,+seh,+win,+process,+file
++loaddll,记录dll加载，卸载
++seh,记录结构化异常处理
++win,窗口和消息
++process,进程和线程相关
++file文件访问，打开、读写等
+将日志输出到对应的目录
+WINEDEBUG=+loaddll,+seh,+win,+process,+file wine WindTerm.exe > ~/Desktop/2.log 2>&1
+2、使用工具查看日志信息
+/usr/bin/deepin-wine-logtool -l ~/Desktop/2.log
+也可以直接通过兼容工具运行软件进行查看log
+3、查看程序实际运行的根目录（cd 是否生效）
+lsof -p <Your_Windows_PID>
+ls -l /proc/<Linux_PID>/cwd
+
+4、readelf
+-a	显示所有信息	快速获取 ELF 文件绝大部分信息
+-h	显示文件头	查看程序入口点、文件类型、架构
+-l	显示程序头	检查内存布局、GNU_STACK 属性（安全审计）
+-S	显示节头	查看代码、数据、只读数据节的详细信息
+-s	显示符号表	定位某个函数或变量的地址，检查符号可见性
+-d	显示动态段	查看程序依赖的动态库
+-r	显示重定位表	调试链接错误，分析代码地址修正
+-x	十六进制转储节内容	查看 .rodata 等节的具体数据
+-p	转储节中的字符串	快速查看二进制文件中的字符串常量
+-R	显示重定位后内容	查看重定位后的地址（如 GOT 表）
+-W	宽行输出	防止 64 位系统下输出被截断
+-w	显示 DWARF 调试信息	配合 gdb 进行源码级调试
+
+5、strace
+read / write / writev – 读写文件描述符
+
+getrusage – 查询线程 CPU 时间
+
+sched_yield – 主动让出 CPU
+
+clock_gettime (CLOCK_BOOTTIME) – 获取单调时间（含休眠）
+
+rt_sigprocmask – 频繁屏蔽/恢复信号集
+
+mprotect – 修改内存页保护属性
+
+信号处理（SIGUSR1）及 rt_sigreturn
+
+
+6、wine日志
+mmdevapi Windows中处理音频库
+
+
+7、杀死所有的exe程序
+/opt/deepinwine/tools/kill.sh exe
+
+8、SIGSEGV/SIGABRT 等传统崩溃信号
+
+9、定位Call from 00006FFFFF36D8A7 to unimplemented function setupapi.dll.SetupDiGetDriverInstallParamsW, aborting
+
+10、EGL（OpenGL 和本地窗口系统的接口）
